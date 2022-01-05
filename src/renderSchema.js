@@ -205,12 +205,26 @@ function renderSchema(schema, options) {
   }
 
   if (query) {
-    printer(
-      `\n${'#'.repeat(headingLevel + 1)} Query${
-        query.name === 'Query' ? '' : ' (' + query.name + ')'
-      }`
-    )
-    renderObject(query, { skipTitle: true, headingLevel, printer, getTypeURL })
+    // console.log(query);
+    printer(`\n${'#'.repeat(headingLevel + 1)} Queries`)
+    // renderObject(query, { skipTitle: true, headingLevel, printer, getTypeURL })
+    query.fields.forEach(type => {
+      printer(`\n${'#'.repeat(headingLevel + 2)} ${type.name}`)
+      type.description ? printer(`\n${type.description}`) : printer('\n')
+      renderObject(
+        {
+          kind: 'OBJECT',
+          name: 'Query',
+          description: null,
+          fields: [type],
+          inputFields: null,
+          interfaces: [],
+          enumValues: null,
+          possibleTypes: null
+        },
+        { skipTitle: true, headingLevel, printer, getTypeURL }
+      )
+    })
   }
 
   if (mutation) {
